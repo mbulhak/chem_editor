@@ -1,3 +1,4 @@
+import tkinter as tk
 from tkinter import messagebox, TclError
 from chempy import balance_stoichiometry
 
@@ -14,12 +15,12 @@ def convert_unicode_subscripts(text):
     text = text.replace('←', '<-')
     return text
 
-def balance_reaction():
+def balance_reaction(text_widget):
     try:
         try:
-            reaction = text_area.get("sel.first", "sel.last").strip()
+            reaction = text_widget.get("sel.first", "sel.last").strip()
         except tk.TclError:
-            reaction = text_area.get("1.0","end").strip()
+            reaction = text_widget.get("1.0","end").strip()
 
         reaction = convert_unicode_subscripts(reaction)
 

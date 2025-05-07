@@ -6,7 +6,7 @@ all_symbols = [
     "⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹",
 ]
 
-def show_symbols():
+def show_symbols(root, text_widget):
     top = tk.Toplevel(root)
     top.title("Wstaw symbol")
 
