@@ -1,9 +1,11 @@
 import tkinter as tk
-from file_ops.save import save_file
+from file_ops.save import save_file, open_file
 from formatting.formatting import toggle_bold, toggle_italic
 from symbols.symbols import show_symbols
 from reactions.reactions import balance_reaction
 from structures.structures import show_structure
+from compounds.compounds import show_compounds
+from simple_reactions.simple_reactions import show_simple_reactions
 
 root = tk.Tk()
 root.title("Edytor naukowy z możliwością symulacji reakcji chemicznych")
@@ -49,7 +51,7 @@ menu = tk.Menu(root)
 
 file_menu = tk.Menu(menu, tearoff=0)
 file_menu.add_command(label="Zapisz", command=lambda: save_file(text_area))
-file_menu.add_command(label="Otwórz", command=lambda: None)
+file_menu.add_command(label="Otwórz", command=lambda:open_file(text_area))
 menu.add_cascade(label="Plik", menu=file_menu)
 
 format_menu = tk.Menu(menu, tearoff=0)
@@ -64,6 +66,17 @@ menu.add_cascade(label="Symbole", menu=symbol_menu)
 reaction_menu = tk.Menu(menu, tearoff=0)
 reaction_menu.add_command(label="Zbilansuj reakcje", command=lambda: balance_reaction(text_area))
 menu.add_cascade(label="Reakcje", menu=reaction_menu)
+
+cmp_menu = tk.Menu(menu, tearoff=0)
+cmp_menu.add_command(label="Wstaw związek chemiczny", command=lambda: show_compounds(root, text_area))
+menu.add_cascade(label="Związki", menu=cmp_menu)
+
+react2_menu = tk.Menu(menu, tearoff=0)
+react2_menu.add_command(
+    label="Wstaw prostą reakcję",
+    command=lambda:show_simple_reactions(root, text_area)
+)
+menu.add_cascade(label="Reakcje proste", menu=react2_menu)
 
 root.config(menu=menu)
 root.mainloop()

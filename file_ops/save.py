@@ -9,3 +9,17 @@ def save_file():
             messagebox.showinfo("Zapisano", "Plik został zapisany.")
         except Exception as e:
             messagebox.showerror("Błąd", f"Nie udało się zapisać pliku:\n{e}")
+
+def open_file(text_widget):
+    file_path = filedialog.askopenfilename(
+        defaultextension=".txt",
+        filetype=[("Pliki tekstowe","*txt"),("Wszystkie pliki","*.*")]
+    )
+    if file_path:
+        try:
+            with open(file_path, "r", encoding="utf-8") as file:
+                content = file.read()
+            text_widget.delete("1.0","end")
+            text_widget.insert("1.0", content)
+        except Exception as e:
+            messagebox.showerror("Błąd", f"Nie udało się wczytać pliku:\n{e}")
