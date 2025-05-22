@@ -1,19 +1,37 @@
+import re
 import tkinter as tk
 from tkinter import messagebox, TclError
 from chempy import balance_stoichiometry
 
-def convert_unicode_subscripts(text):
-    subscript_map = {
-        '₀': '0', '₁': '1', '₂': '2', '₃': '3', '₄': '4',
-        '₅': '5', '₆': '6', '₇': '7', '₈': '8', '₉': '9'
-    }
-    for uni, num in subscript_map.items():
-        text = text.replace(uni, num)
+_SUB_MAP = {
+    '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄',
+    '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉',
+}
 
-    text = text.replace('→', '->')
-    text = text.replace('⇌', '->')
-    text = text.replace('←', '<-')
+def convert_unicode_subscripts(text):
+    rev = {v: k for k, v in _SUB_MAP.items()}
+    for uni, ascii_ in rev.items():
+        text = text.replace(uni, ascii_)
+    text = text.replace('→', '->').replace('←', '<-').replace('⇌', '->')
     return text
+
+def _subscript_formula(formula: str) -> str:
+    for arabic, uni in _SUB_MAP.items():
+        formula = formula.replace(arabic, uni)
+    return formula
+
+def _format_side(side: str) -> str:
+    terms = [t.strip() for t in side.split('+')]
+    out = []
+    for term in terms:
+        m = re.match(r'^(\d+)\s*(.*)$', term)
+        if m:
+            coeff, form = m.groups()
+            form_sub = _subscript_formula(form)
+            out.append(f"{coeff} {_subscript_formula(form)}")
+        else:
+            out.append(_subscript_formula(term))
+    return " + ".join(out)
 
 def balance_reaction(text_widget):
     try:
@@ -36,7 +54,10 @@ def balance_reaction(text_widget):
         lhs_bal = ' + '.join(f"{v} {k}" for k, v in balanced[0].items())
         rhs_bal = ' + '.join(f"{v} {k}" for k, v in balanced[1].items())
 
-        result = f"Zbilansowana reakcja:\n{lhs_bal} → {rhs_bal}"
+        lhs_fmt = _format_side(lhs_bal)
+        rhs_fmt = _format_side(rhs_bal)
+
+        result = f"Zbilansowana reakcja:\n{lhs_fmt} → {rhs_fmt}"
         messagebox.showinfo("Wynik bilansowania", result)
 
     except Exception as e:
