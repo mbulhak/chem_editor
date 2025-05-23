@@ -7,6 +7,46 @@ from structures.structures import show_structure
 from compounds.compounds import show_compounds
 from simple_reactions.simple_reactions import show_simple_reactions
 
+class Tooltip:
+    def __init__(self, widget, text, delay=500):
+        self.widget = widget
+        self.text = text
+        self.delay = delay
+        self.tipwindow = None
+        self.id = None
+        widget.bind("<Enter>", self._schedule)
+        widget.bind("<Leave>", self._hide)
+
+    def _schedule(self, event=None):
+        self._unschedule()
+        self.id = self.widget.after(self.delay, self._show)
+
+    def _unschedule(self):
+        if self.id:
+            self.widget.after_cancel(self.id)
+            self.id = None
+
+    def _show(self):
+        if self.tipwindow:
+            return
+        x, y, cx, cy = self.widget.bbox("insert")
+        x += self.widget.winfo_rootx() + 20
+        y += self.widget.winfo_rooty() + 20
+        self.tipwindow = tw = tk.Toplevel(self.widget)
+        tw.wm_overrideredirect(True)
+        tw.wm_geometry(f"+{x}+{y}")
+        label = tk.Label(tw, text=self.text, justify="left",
+                         background="#ffffe0", relief="solid", borderwidth=1,
+                         font=("Arial", 10))
+        label.pack(ipadx=4, ipady=2)
+
+    def _hide(self, event=None):
+        self._unschedule()
+        if self.tipwindow:
+            self.tipwindow.destroy()
+            self.tipwindow = None
+
+
 root = tk.Tk()
 root.title("Edytor naukowy z możliwością symulacji reakcji chemicznych")
 root.geometry("800x600")
@@ -42,6 +82,9 @@ smiles_entry.bind(
     "<Return>",
     lambda event: show_structure(root, smiles_entry.get().strip())
 )
+
+tooltip_text = "Wpisz , np.\nC C O → \"CCO\"\nBenzen → \"c1ccccc1\""
+Tooltip(smiles_entry, tooltip_text)
 
 text_area = tk.Text(root, wrap=tk.WORD, font=("Arial", 12), undo=True)
 text_area.pack(expand=True, fill="both", padx=5, pady=5)
