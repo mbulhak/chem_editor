@@ -1,6 +1,6 @@
 import re
 import tkinter as tk
-from tkinter import messagebox, TclError
+from tkinter import messagebox
 from chempy import balance_stoichiometry
 
 _SUB_MAP = {
@@ -27,11 +27,29 @@ def _format_side(side: str) -> str:
         m = re.match(r'^(\d+)\s*(.*)$', term)
         if m:
             coeff, form = m.groups()
-            form_sub = _subscript_formula(form)
             out.append(f"{coeff} {_subscript_formula(form)}")
         else:
             out.append(_subscript_formula(term))
     return " + ".join(out)
+
+def parse_reaction(reaction):
+    """Return formulas on both sides, ignoring existing stoichiometric coefficients."""
+    reaction = convert_unicode_subscripts(reaction.strip())
+    if reaction.count("->") + reaction.count("<-") != 1:
+        raise ValueError("Podaj jedną reakcję ze strzałką ->, →, ← lub ⇌.")
+    if "<-" in reaction:
+        right, left = reaction.split("<-")
+    else:
+        left, right = reaction.split("->")
+
+    def formulas(side):
+        terms = [re.sub(r"^\d+\s*", "", term.strip()) for term in side.split("+")]
+        if not all(terms):
+            raise ValueError("Obie strony reakcji muszą zawierać poprawne wzory związków.")
+        return set(terms)
+
+    return formulas(left), formulas(right)
+
 
 def balance_reaction(text_widget):
     try:
@@ -42,13 +60,7 @@ def balance_reaction(text_widget):
 
         reaction = convert_unicode_subscripts(reaction)
 
-        if '->' not in reaction:
-            messagebox.showwarning("Uwaga", "Reakcja musi zawierać '->'")
-            return
-
-        lhs_str, rhs_str = reaction.split("->")
-        lhs = {s.strip() for s in lhs_str.split('+')}
-        rhs = {s.strip() for s in rhs_str.split('+')}
+        lhs, rhs = parse_reaction(reaction)
 
         balanced = balance_stoichiometry(lhs, rhs)
         lhs_bal = ' + '.join(f"{v} {k}" for k, v in balanced[0].items())

@@ -25,3 +25,4 @@ def show_symbols(root, text_widget):
     insert_btn = tk.Button(top, text="Wstaw", command=insert_selected)
     insert_btn.pack(pady=5)
 
+

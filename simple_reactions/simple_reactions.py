@@ -10,7 +10,7 @@ simple_reactions = {
     "2 H₂O": "2 H₂ + O₂",
     "4 Fe + 3 O₂ + 6 H₂O": "4 Fe(OH)₃",
     "CH₃COOH + NaHCO₃": "CH₃COO⁻ + CO₂ + H₂O",
-    "CO₂ + 6 H₂O + światło": "C₆H₁₂O₆ + 6 O₂",
+    "6 CO₂ + 6 H₂O + światło": "C₆H₁₂O₆ + 6 O₂",
     "C₆H₁₂O₆ + 6 O₂": "6 CO₂ + 6 H₂O + energia",
     "CaCO₃": "CaO + CO₂",
     "Ca(OH)₂ + CO₂": "CaCO₃ + H₂O",
