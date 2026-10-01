@@ -1,14 +1,19 @@
 import io
 import tkinter as tk
+from tkinter import messagebox
 from rdkit import Chem
 from rdkit.Chem import Draw
 from PIL import Image, ImageTk
 
 
 def show_structure(root, smiles):
+    smiles = smiles.strip()
+    if not smiles:
+        messagebox.showwarning("Uwaga", "Wpisz strukturę w notacji SMILES.")
+        return
     mol = Chem.MolFromSmiles(smiles)
     if mol is None:
-        tk.messagebox.showerror("Błąd", f"Niepoprawny SMILES:\n{smiles}")
+        messagebox.showerror("Błąd", f"Niepoprawny SMILES:\n{smiles}")
         return
 
     img = Draw.MolToImage(mol, size=(300,300))
@@ -25,3 +30,4 @@ def show_structure(root, smiles):
     label = tk.Label(top, image=tk_img)
     label.image = tk_img
     label.pack(padx=10, pady=10)
+

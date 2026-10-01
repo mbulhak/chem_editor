@@ -6,17 +6,17 @@ compounds = {
     "Tlen (O₂)": "O2",
     "Azot (N₂)":"N2",
     "Chlorek sodu (NaCl)": "NaCl",
-    "Glukoza (C₆H₁₂O₆)": "C(C1C(C(C(C(O1)O)O)O)O)O",
+    "Glukoza (C₆H₁₂O₆)": "C6H12O6",
     "Etanol (C₂H₅OH)": "CCO",
     "Amoniak (NH₃)": "NH3",
     "Kwas siarkowy (H₂SO₄)": "H2SO4",
     "Kwas solny (HCl)": "HCl",
     "Wodorotlenek sodu (NaOH)": "NaOH",
     "Metan (CH₄)": "CH4",
-    "Kwas octowy (CH₃COOH)": "CH4COOH",
+    "Kwas octowy (CH₃COOH)": "CH3COOH",
     "Tlenek węgla (CO)": "CO",
     "Węglan wapnia (CaCO₃)": "CaCO3",
-    "Wodorotlenek wapnia (CaOH)₂": "(CaOH)2",
+    "Wodorotlenek wapnia (Ca(OH)₂)": "Ca(OH)2",
     "Siarczan wapnia (CaSO₄)": "CaSO4",
     "Kwas azotowy (HNO₃)": "HNO3",
     "Aceton ((CH₃)₂CO)": "(CH3)2CO",
@@ -37,9 +37,10 @@ def show_compounds(root, text_widget):
         if sel:
             idx = sel[0]
             name = listbox.get(idx)
-            smiles = compounds[name]
-            text_widget.insert(tk.INSERT, smiles)
+            formula = compounds[name]
+            text_widget.insert(tk.INSERT, formula)
             top.destroy()
 
     tk.Button(top, text="Wstaw", command=insert_selected).pack(pady=5)
+
 
